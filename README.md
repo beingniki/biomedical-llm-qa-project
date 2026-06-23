@@ -15,9 +15,9 @@
 
 ## The Problem This Solves
 
-Biomedical professionals — clinicians, researchers, drug developers, ask complex questions that require evidence from thousands of research papers. General LLMs like GPT-4 answer these confidently but **hallucinate up to 30% of the time** in biomedical contexts: citing papers that don't exist, misquoting trial statistics, generating outdated treatment guidelines.
+Biomedical professionals as clinicians, researchers, drug developers, ask complex questions that require evidence from thousands of research papers. General LLMs like GPT-4 answer these confidently but **hallucinate up to 30% of the time** in biomedical contexts: citing papers that don't exist, misquoting trial statistics, generating outdated treatment guidelines.
 
-**This system solves that.** Before generating any answer, it retrieves real, current PubMed abstracts and grounds every response in actual published evidence — with sources shown alongside the answer so users can verify every claim.
+**This system solves that.** Before generating any answer, it retrieves real, current PubMed abstracts and grounds every response in actual published evidence with sources shown alongside the answer so users can verify every claim.
 
 > *This is the same architectural pattern used in production at Microsoft (BioGPT), Google (Med-PaLM 2), and Elsevier (Clinical Key AI) and is directly aligned with FDA's 2025–2026 guidance on evidence-grounded AI in drug development.*
 
@@ -35,7 +35,7 @@ System:    1. Searches 5,000+ indexed PubMed abstracts (FAISS + BM25)
 You get:   A direct answer + the actual abstracts it used to reach it
 ```
 
-**Try it live →** [huggingface.co/spaces/YOUR_USERNAME/biomedical-qa](https://huggingface.co/spaces/YOUR_USERNAME/biomedical-qa)
+**Try it live →** [huggingface.co/spaces/beingniki/biomedical-qa](https://huggingface.co/spaces/beingniki/biomedical-qa)
 
 ---
 
@@ -49,7 +49,7 @@ You get:   A direct answer + the actual abstracts it used to reach it
 | 🟡 LoRA Fine-Tuned BioGPT | ~55% | ~35% | ~28% | +10pp from task-specific fine-tuning |
 | 🟢 **RAG + Fine-Tuned (full system)** | **~65%** | **~44%** | **~38%** | **Best — retrieval + fine-tuning combined** |
 
-*RAG + Fine-Tuning outperforms the base model by ~20 percentage points on Exact Match — consistent with published BioASQ 2025 benchmark results showing hybrid retrieval systems outperform standalone LLMs on biomedical QA.*
+*RAG + Fine-Tuning outperforms the base model by ~20 percentage points on Exact Match consistent with published BioASQ 2025 benchmark results showing hybrid retrieval systems outperform standalone LLMs on biomedical QA.*
 
 ---
 
@@ -96,7 +96,7 @@ You get:   A direct answer + the actual abstracts it used to reach it
 | **Biomedical Embeddings** | `neuml/pubmedbert-base-embeddings` | Pre-trained on PubMed — outperforms general BERT on biomedical retrieval |
 | **Dense Search** | FAISS `IndexFlatIP` | Industry-standard vector search; millisecond lookup across 5k+ passages |
 | **Keyword Search** | BM25 (`rank_bm25`) | Catches exact gene/drug names that semantic search misses |
-| **Base LLM** | `microsoft/biogpt` | Pre-trained on 15M PubMed abstracts — biomedical domain knowledge built-in |
+| **Base LLM** | `microsoft/biogpt` | Pre-trained on 15M PubMed abstracts - biomedical domain knowledge built-in |
 | **Fine-Tuning** | PEFT + LoRA (r=4) | Trains only ~1% of parameters; saves a 10MB adapter instead of a 1.5GB model |
 | **Training Hardware** | Apple MPS (M-series GPU) | PyTorch MPS backend — no cloud GPU needed for this scale |
 | **Demo UI** | Gradio + HuggingFace Spaces | Live public URL; zero-install for reviewers |
@@ -106,10 +106,10 @@ You get:   A direct answer + the actual abstracts it used to reach it
 ## Key Technical Decisions — The "Why" Behind Each Choice
 
 **Why RAG instead of just fine-tuning?**
-Fine-tuning bakes knowledge into model weights at training time — it goes stale and can't cite sources. RAG dynamically retrieves current evidence at inference time, making the system auditable and updatable without retraining. Critical for FDA-compliant clinical AI.
+Fine-tuning bakes knowledge into model weights at training time it goes stale and can't cite sources. RAG dynamically retrieves current evidence at inference time, making the system auditable and updatable without retraining. Critical for FDA-compliant clinical AI.
 
 **Why LoRA instead of full fine-tuning?**
-Full fine-tuning BioGPT (~347M params) requires 16GB+ GPU memory and hours of compute. LoRA adds tiny low-rank matrices (rank=4) to just the attention layers (`q_proj`, `v_proj`), training ~1% of parameters with equivalent task performance. The saved adapter is 10MB vs 1.5GB — practical for deployment.
+Full fine-tuning BioGPT (~347M params) requires 16GB+ GPU memory and hours of compute. LoRA adds tiny low-rank matrices (rank=4) to just the attention layers (`q_proj`, `v_proj`), training ~1% of parameters with equivalent task performance. The saved adapter is 10MB vs 1.5GB practical for deployment.
 
 **Why hybrid BM25 + FAISS instead of just one?**
 Biomedical text has exact terminology (gene symbols, drug names, p-values) that semantic embeddings blur together. BM25 catches these exact matches; FAISS catches conceptual similarity. Combined, they outperform either alone on BioASQ benchmarks.
@@ -123,7 +123,7 @@ Domain-specific pre-training matters. PubMedBERT was trained entirely on PubMed 
 
 ```bash
 # Clone and set up
-git clone https://github.com/YOUR_USERNAME/biomedical-llm-qa-project
+git clone https://github.com/beingniki/biomedical-llm-qa-project
 cd biomedical-llm-qa-project
 python -m venv .venv && source .venv/bin/activate
 
@@ -179,7 +179,7 @@ biomedical-llm-qa-project/
 
 This project was built in 2026, directly aligned with the current state of biomedical AI:
 
-- **FDA Draft Guidance (Jan 2025)** on AI/ML in drug development emphasises evidence-grounded, auditable AI — exactly what RAG enables
+- **FDA Draft Guidance (Jan 2025)** on AI/ML in drug development emphasises evidence-grounded, auditable AI exactly what RAG enables
 - **FDA-EMA Joint Principles (Jan 2026)** on AI in medicines regulation reinforce the need for systems that can cite and verify their sources
 - **Pharma adoption** — Moderna, AstraZeneca, and Roche are actively deploying RAG-based internal literature review systems for clinical trial design and regulatory submissions
 
@@ -188,7 +188,7 @@ This project was built in 2026, directly aligned with the current state of biome
 ## About the Author
 
 **Nikita Patil**
-MSc Bioinformatics | Bioinformatics Intern @ AskBio (Bayer AG subsidiary, Edinburgh)
+MSc Bioinformatics AI/ML | Bioinformatics AI/ML Intern @ AskBio (Bayer AG subsidiary, Edinburgh)
 
 Working at the intersection of bioinformatics, AI/ML, and gene therapy. This project was built in parallel with an industry internship focused on AAV capsid library modelling — demonstrating the ability to deliver both applied research and independent portfolio work simultaneously.
 
